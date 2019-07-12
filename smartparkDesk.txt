@@ -1,0 +1,83 @@
+#include <UbidotsMicroESP8266.h>
+
+
+
+
+#define TOKEN  "A1E-x4HLncGvwr6S2Hv7pDef3VCsE2xqqS"  // Put here your Ubidots TOKEN
+#define ID_1  "5cb1876fc03f972d7e59bac2" // Put your variable ID here
+#define ID_2 "5cb1877cc03f972d7e59baca" // Put your variable ID here
+#define ID_3 "5cb18784c03f972d7e59bacb" // Put your variable ID here
+#define ID_4 "5cb18792c03f972e2c143a0d" // Put your variable ID here
+#define WIFISSID "@freakkkk" // Put here your Wi-Fi SSID
+#define PASSWORD "00000909" // Put here your Wi-Fi password
+
+Ubidots client(TOKEN);
+
+int sensor1,sensor2,sensor3,sensor4;
+
+
+void setup()
+{
+
+
+
+Serial.begin(9600);
+  
+pinMode(D0,INPUT);
+pinMode(D1,INPUT);
+pinMode(D2,INPUT);
+pinMode(D8,INPUT);
+
+pinMode(D5,OUTPUT);
+pinMode(D6,OUTPUT);
+
+digitalWrite(D0,LOW);
+digitalWrite(D1,LOW);
+digitalWrite(D2,LOW);
+digitalWrite(D8,LOW);
+
+digitalWrite(D5,LOW);
+digitalWrite(D6,LOW);
+      
+ 
+    Serial.begin(115200);
+    delay(10);
+    
+    client.wifiConnection(WIFISSID, PASSWORD);
+    //client.setDebug(true); // Uncomment this line to set DEBUG on
+}
+
+void loop()
+{
+  
+  sensor1 = digitalRead(D0);
+  sensor2 = digitalRead(D1);
+  sensor3 = digitalRead(D2);
+  sensor4 = digitalRead(D8);
+  
+   client.add(ID_1, sensor1);
+   client.add(ID_2, sensor2);
+   client.add(ID_3, sensor3);
+   client.add(ID_4, sensor4);
+   client.sendAll(false);
+    delay(1000);
+
+    if(sensor1 == LOW || sensor2 == LOW || sensor3 == LOW || sensor4 == LOW)
+    {
+      digitalWrite(D5,HIGH);
+      digitalWrite(D6,LOW);
+      delay(2000);
+      Serial.print("available");
+      digitalWrite(D5,LOW);
+      digitalWrite(D6,LOW);
+    }
+    else if (sensor1 == HIGH && sensor2 == HIGH && sensor3 == HIGH && sensor4 == HIGH)
+    {
+      digitalWrite(D5,LOW);
+      digitalWrite(D6,HIGH);
+      delay(2000);
+      Serial.print("notavailable");
+      digitalWrite(D5,LOW);
+     digitalWrite(D6,LOW);
+    }                  
+}
