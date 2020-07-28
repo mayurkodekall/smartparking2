@@ -1,1 +1,1 @@
-mail has send
+mail has send and receive
